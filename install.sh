@@ -45,9 +45,9 @@ Created by jrossmanjr -- https://github.com/jrossmanjr
 # UPDATE and install software
 echo "::: Welcome to the VPN configurator... :::"
 echo "::: Updating and installing dependancies :::"
-$SUDO apt update > /dev/null
-$SUDO apt upgrade -y > /dev/null
-$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip -y > /dev/null
+$SUDO apt update 
+$SUDO apt upgrade -y 
+$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip -y 
 $SUDO wget http://www.fars-robotics.net/install-wifi -O /usr/bin/install-wifi
 $SUDO chmod +x /usr/bin/install-wifi
 $SUDO install-wifi
