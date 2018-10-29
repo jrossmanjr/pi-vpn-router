@@ -41,7 +41,7 @@ A huge thanks to zentralwerkstatt, superjamie, and StarshipEngineer on their sim
 
 Created by jrossmanjr -- https://github.com/jrossmanjr
 "
-wait 10
+
 # UPDATE and install software
 echo "::: Welcome to the VPN configurator... :::"
 echo "::: Updating and installing dependancies :::"
