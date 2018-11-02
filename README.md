@@ -1,5 +1,5 @@
 # pi-vpn-router
-Bash script to create a WiFi router that connects to a PIA VPN using a raspberry pi
+Bash script to create a WiFi router that connects to a PIA or NordVPN using a raspberry pi
 
 To intstall:
 ```
@@ -12,9 +12,9 @@ The program will install and then will give you several prompts for data:
 
 ---Router Gateway
 
----PIA Username and Password
+---PIA or NordVPN Username and Password
 
----Preferred PIA US Exit node
+---Preferred PIA US Exit node or NordVPN Exit node server name [Link](https://nordvpn.com/servers/)  
 
 
 When install is finished just restart - `sudo reboot`
