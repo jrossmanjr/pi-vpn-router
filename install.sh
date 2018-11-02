@@ -253,7 +253,7 @@ fi
 #$SUDO sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf 
 $SUDO chown -R pi:pi openvpn/*
 $SUDO chmod -R 775 openvpn/
-$SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" vpn.conf
+$SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" openvpn/vpn.conf
 $SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
 
 echo "::: OPENVPN and PIA Servers configured :::"
