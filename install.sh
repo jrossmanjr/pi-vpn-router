@@ -264,7 +264,7 @@ $SUDO iptables -A FORWARD -s 192.168.42.0/24 -i wlan0 -o tun0 -m conntrack --cts
 
 # allow SSH so you can update 
 $SUDO iptables -t mangle -A OUTPUT -p tcp --sport 22 -j MARK --set-mark 65
-
+echo "::: IP tables Set! :::"
 # save the iptables you just edited and have them apply at startup
 $SUDO sh -c "iptables-save > /etc/iptables/rules.v4"
 $SUDO netfilter-persistent save
