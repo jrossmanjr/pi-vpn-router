@@ -17,4 +17,4 @@ The program will install and then will give you several prompts for data:
 ---Preferred PIA US Exit node
 
 
-When install is finished just restart - 'sudo reboot'
+When install is finished just restart - `sudo reboot`
