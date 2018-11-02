@@ -48,7 +48,7 @@ echo "::: Welcome to the VPN configurator... :::"
 echo "::: Updating and installing dependancies :::"
 $SUDO apt-get update 
 $SUDO apt-get upgrade -y 
-$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip -y 
+$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip ca-certificates -y 
 $SUDO wget http://www.fars-robotics.net/install-wifi -O /usr/bin/install-wifi
 $SUDO chmod +x /usr/bin/install-wifi
 $SUDO install-wifi
@@ -147,7 +147,7 @@ echo "::: WiFi Hotspot Created :::"
 
 ############################################################
 
-function password_file() {
+function pia_password_file() {
 # make a password file
 var1=$(whiptail --inputbox "Please enter your PIA VPN Username" ${r} ${c} --title "PIA Username" 3>&1 1>&2 2>&3)
 var2=$(whiptail --inputbox "Please enter PIA VPN Password" ${r} ${c} --title "PIA Password" 3>&1 1>&2 2>&3)
@@ -174,7 +174,7 @@ OMIT_SENDSIGS=0' | $SUDO tee /etc/default/openvpn > /dev/null
 
 whiptail --msgbox --title "NOTE: as of the writing of this program this only uses:" "\nThe 14 PIA servers in the US as exit nodes..." ${r} ${c}
 
-var9=$(whiptail --title "What end node location do you want to use?" --radiolist "Select an exit point" ${r} ${c} 14 \
+var9=$(whiptail --title "What end node location do you want to use?" --radiolist "Select an exit point" ${r} ${c} 16 \
 "1" "US California" OFF \
 "2" "US Chicago" OFF \
 "3" "US Denver" OFF \
@@ -259,6 +259,48 @@ $SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
 echo "::: OPENVPN and PIA Servers configured :::"
 }
 
+
+############################################################
+# Nordvpn password 
+
+function nord_password_file() {
+# make a password file
+var7=$(whiptail --inputbox "Please enter your NordVPN Username" ${r} ${c} --title "NordVPN Username" 3>&1 1>&2 2>&3)
+var6=$(whiptail --inputbox "Please enter NordVPN Password" ${r} ${c} --title "NordVPN Password" 3>&1 1>&2 2>&3)
+$SUDO touch /etc/openvpn/pass.txt
+echo "$var7" | $SUDO tee --append /etc/openvpn/pass.txt > /dev/null
+echo "$var6" | $SUDO tee --append /etc/openvpn/pass.txt > /dev/null
+
+echo "::: Password File Generated :::"
+}
+
+
+############################################################
+# Nordvpn files
+
+function nord_setup() {
+# download the OPENVPN files from NordVPN
+wget https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip
+unzip ovpn.zip -d openvpn
+nord=$(whiptail --inputbox "For best server -- https://nordvpn.com/servers/" ${r} ${c} --title "Enter Nord Server Name - usXXXX.nordvpn.com" 3>&1 1>&2 2>&3)
+$SUDO cp openvpn/ovpn_tcp/$nord.udp.ovpn openvpn/vpn.conf
+
+# edit openvpn conf file
+$SUDO chown -R pi:pi openvpn/*
+$SUDO chmod -R 775 openvpn/
+$SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" openvpn/vpn.conf
+$SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
+
+# Change default openvpn settings config
+echo '
+AUTOSTART="all"
+OPTARGS=""
+OMIT_SENDSIGS=0' | $SUDO tee /etc/default/openvpn > /dev/null
+
+echo "::: OPENVPN and NordVPN Servers configured :::"
+}
+
+
 ############################################################
 
 function ip_tables() {
@@ -287,20 +329,37 @@ $SUDO netfilter-persistent save
 }
 
 #############################################################
+#Mission Complete notification 
 
 function mission_complete() {
 echo "::: Installer is finished - PLEASE REBOOT :::"
 }
 
+############################################################
+# VPN Selection
+
+function vpn_selection() {
+var8=$(whiptail --title "Choose VPN Provider" --menu "Choose an option" ${r} ${c} 4 \
+"PIA" "Private Internet Access"\
+"Nord" "NordVPN" 3>&1 1>&2 2>&3)
+
+if [ $var9 = "PIA" ]; then
+pia_password_file
+pia_setup
+else
+nord_password_file
+nord_setup
+}
+
 #############################################################
 # Call the Functions
-
 
 update_install
 network_settings
 hostapd
 dhcp
-password_file
+#vpn_selection
+pia_password_file
 pia_setup
 ip_tables
 mission_complete
