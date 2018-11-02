@@ -42,6 +42,7 @@ A huge thanks to zentralwerkstatt, superjamie, and StarshipEngineer on their sim
 Created by jrossmanjr -- https://github.com/jrossmanjr
 "
 
+function update_install() {
 # UPDATE and install software
 echo "::: Welcome to the VPN configurator... :::"
 echo "::: Updating and installing dependancies :::"
@@ -53,9 +54,11 @@ $SUDO chmod +x /usr/bin/install-wifi
 $SUDO install-wifi
 
 echo "::: Installs complete :::"
+}
 
 ############################################################
 
+function network_settings() {
 # change interfaces 
 # get ipaddress variable
 _IP=$(hostname -I) || true
@@ -89,9 +92,11 @@ $SUDO sysctl -w net.ipv6.conf.all.disable_ipv6=1
 $SUDO sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
 echo "::: Updated Network Interfaces :::" 
+}
 
 ############################################################
 
+function hostapd() {
 # add settings to hostapd
 echo "
 authoritative;
@@ -105,9 +110,11 @@ subnet 192.168.42.0 netmask 255.255.255.0 {
 }" | $SUDO tee --append /etc/hostapd/hostapd.conf > /dev/null
 
 echo "::: Installed WiFi hotspot rules :::"
+}
 
 ############################################################
 
+function dhcp() {
 # set dhcp server for wlan0
 echo 'INTERFACESv4="wlan0"' | $SUDO tee /etc/default/isc-dhcp-server > /dev/null
 
@@ -136,9 +143,11 @@ echo "wpa_passphrase=$var5" | sudo tee --append /etc/hostapd/hostapd.conf > /dev
 
 echo 'DAEMON_CONF="/etc/hostapd/hostapd.conf"' | sudo tee --append /etc/default/hostapd > /dev/null
 echo "::: WiFi Hotspot Created :::"
+}
 
 ############################################################
 
+function password_file() {
 # make a password file
 var1=$(whiptail --inputbox "Please enter your PIA VPN Username" ${r} ${c} --title "PIA Username" 3>&1 1>&2 2>&3)
 var2=$(whiptail --inputbox "Please enter PIA VPN Password" ${r} ${c} --title "PIA Password" 3>&1 1>&2 2>&3)
@@ -147,9 +156,11 @@ echo "$var1" | $SUDO tee --append /etc/openvpn/pass.txt > /dev/null
 echo "$var2" | $SUDO tee --append /etc/openvpn/pass.txt > /dev/null
 
 echo "::: Password File Generated :::"
+}
 
 ############################################################
 
+function pia_setup() {
 # download the OPENVPN files from PIA
 wget https://www.privateinternetaccess.com/openvpn/openvpn.zip
 unzip openvpn.zip -d openvpn
@@ -243,9 +254,11 @@ sudo sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.c
 sudo sed 's+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g' /etc/openvpn/vpn.conf 
 
 echo "::: OPENVPN and PIA Servers configured :::"
+}
 
 ############################################################
 
+function ip_tables() {
 # setup iptables to route traffic from wlan0 thru vpn 
 
 $SUDO sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
@@ -268,7 +281,24 @@ echo "::: IP tables Set! :::"
 # save the iptables you just edited and have them apply at startup
 $SUDO sh -c "iptables-save > /etc/iptables/rules.v4"
 $SUDO netfilter-persistent save
+}
 
 #############################################################
 
+function mission_complete() {
 echo "::: Installer is finished - PLEASE REBOOT :::"
+}
+
+#############################################################
+# Call the Functions
+
+
+update_install
+network_settings
+hostapd
+dhcp
+password_file
+pia_setup
+ip_tables
+mission_complete
+
