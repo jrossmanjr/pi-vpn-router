@@ -164,6 +164,7 @@ function pia_setup() {
 # download the OPENVPN files from PIA
 wget https://www.privateinternetaccess.com/openvpn/openvpn.zip
 unzip openvpn.zip -d openvpn
+$SUDO chown -R pi:pi openvpn/*
 $SUDO cp openvpn/ca.rsa.2048.crt openvpn/crl.rsa.2048.pem /etc/openvpn/
 
 # Change default openvpn settings config
