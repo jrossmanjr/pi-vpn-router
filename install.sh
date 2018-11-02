@@ -107,7 +107,7 @@ subnet 192.168.42.0 netmask 255.255.255.0 {
   option routers 192.168.42.1;
   option domain-name "local";
   option domain-name-servers 1.1.1.1, 8.8.4.4;
-}" | $SUDO tee --append /etc/hostapd/hostapd.conf > /dev/null
+}" | $SUDO tee --append /etc/dhcp/dhcpd.conf > /dev/null
 
 echo "::: Installed WiFi hotspot rules :::"
 }
@@ -253,7 +253,7 @@ fi
 #$SUDO sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf 
 $SUDO chown -R pi:pi openvpn/*
 $SUDO chmod -R 775 openvpn/
-$SUDO sed 's&auth-user-pass&auth-user-pass /etc/openvpn/pass.txt&' openvpn/vpn.conf
+$SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" vpn.conf
 $SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
 
 echo "::: OPENVPN and PIA Servers configured :::"
