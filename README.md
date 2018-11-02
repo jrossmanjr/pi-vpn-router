@@ -2,20 +2,20 @@
 Bash script to create a WiFi router that connects to a PIA VPN using a raspberry pi
 
 To intstall:
+```
+git clone https://github.com/jrossmanjr/pi-vpn-router
 
-'git clone https://github.com/jrossmanjr/pi-vpn-router'
+cd pi-vpn-router
 
-'cd pi-vpn-router'
+sudo bash install.sh
+```
+The program will install and then will give you several prompts for data:
 
-'sudo bash install.sh'
+---Router Gateway
 
-- the program will install and then will give you several prompts for data:
+---PIA Username and Password
 
--- Router Gateway
-
--- PIA Username and Password
-
--- Preferred PIA US Exit node
+---Preferred PIA US Exit node
 
 
-when install is finished just restart - 'sudo reboot'
+When install is finished just restart - 'sudo reboot'
