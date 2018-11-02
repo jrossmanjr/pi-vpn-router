@@ -358,9 +358,9 @@ update_install
 network_settings
 hostapd
 dhcp
-#vpn_selection
-pia_password_file
-pia_setup
+vpn_selection
+#pia_password_file
+#pia_setup
 ip_tables
 mission_complete
 
