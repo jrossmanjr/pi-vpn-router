@@ -191,46 +191,46 @@ var9=$(whiptail --title "What end node location do you want to use?" --radiolist
 "14" "US West" OFF 3>&1 1>&2 2>&3)
 
 if [ $var9 = 1 ]; then
-$SUDO mv openvpn/US\ California.ovpn /etc/openvpn/vpn.conf
+$SUDO mv openvpn/US\ California.ovpn openvpn/vpn.conf
 else
 	if [ $var9 = 2 ]; then
-    $SUDO mv openvpn/US\ Chicago.ovpn /etc/openvpn/vpn.conf
+    $SUDO mv openvpn/US\ Chicago.ovpn openvpn/vpn.conf
 	else
     	if [ $var9 = 3 ]; then
-    	$SUDO mv openvpn/US\ Denver.ovpn /etc/openvpn/vpn.conf
+    	$SUDO mv openvpn/US\ Denver.ovpn openvpn/vpn.conf
 		else
     		if [ $var9 = 4 ]; then
-    		$SUDO mv openvpn/US\ East.ovpn /etc/openvpn/vpn.conf    	
+    		$SUDO mv openvpn/US\ East.ovpn openvpn/vpn.conf    	
     		else
     			if [ $var9 = 5 ]; then
-    			$SUDO mv openvpn/US\ Florida.ovpn /etc/openvpn/vpn.conf		
+    			$SUDO mv openvpn/US\ Florida.ovpn openvpn/vpn.conf		
     			else 
     				if [ $var9 = 6 ]; then
-    				$SUDO mv openvpn/US\ Houston.ovpn /etc/openvpn/vpn.conf
+    				$SUDO mv openvpn/US\ Houston.ovpn openvpn/vpn.conf
     				else
  		   				if [ $var9 = 7 ]; then
-    					$SUDO mv openvpn/US\ Las\ Vegas.ovpn /etc/openvpn/vpn.conf
+    					$SUDO mv openvpn/US\ Las\ Vegas.ovpn openvpn/vpn.conf
     					else
 			    			if [ $var9 = 8 ]; then
-    						$SUDO mv openvpn/US\ Atlanta.ovpn /etc/openvpn/vpn.conf
+    						$SUDO mv openvpn/US\ Atlanta.ovpn openvpn/vpn.conf
     						else	
     							if [ $var9 = 9 ]; then
-    							$SUDO mv openvpn/US\ New\ York\ City.ovpn /etc/openvpn/vpn.conf
+    							$SUDO mv openvpn/US\ New\ York\ City.ovpn openvpn/vpn.conf
     							else	
     								if [ $var9 = 10 ]; then
-    								$SUDO mv openvpn/US\ Seattle.ovpn /etc/openvpn/vpn.conf
+    								$SUDO mv openvpn/US\ Seattle.ovpn openvpn/vpn.conf
 		    						else
 		    							if [ $var9 = 11 ]; then
-    									$SUDO mv openvpn/US\ Silicon\ Valley.ovpn /etc/openvpn/vpn.conf
+    									$SUDO mv openvpn/US\ Silicon\ Valley.ovpn openvpn/vpn.conf
     	    							else
     	    								if [ $var9 = 12 ]; then
-    										$SUDO mv openvpn/US\ Texas.ovpn /etc/openvpn/vpn.conf
+    										$SUDO mv openvpn/US\ Texas.ovpn openvpn/vpn.conf
     	    								else
     	    									if [ $var9 = 13 ]; then
-    											$SUDO mv openvpn/US\ Washington\ DC.ovpn /etc/openvpn/vpn.conf
+    											$SUDO mv openvpn/US\ Washington\ DC.ovpn openvpn/vpn.conf
     	    									else
     	    										if [ $var9 = 14 ]; then
-    												$SUDO mv openvpn/US\ West.ovpn /etc/openvpn/vpn.conf
+    												$SUDO mv openvpn/US\ West.ovpn openvpn/vpn.conf
     	    										else 
     	    										echo "im lost..."
     	    										fi
@@ -249,9 +249,10 @@ else
 fi
 
 # edit openvpn conf file
-sudo sed 's+ca.rsa.2048.crt+/etc/openvpn/ca.rsa.2048.crt+g' /etc/openvpn/vpn.conf 
-sudo sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf 
-sudo sed 's+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g' /etc/openvpn/vpn.conf 
+#$SUDO sed 's+ca.rsa.2048.crt+/etc/openvpn/ca.rsa.2048.crt+g' /etc/openvpn/vpn.conf 
+#$SUDO sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf 
+$SUDO sed 's&auth-user-pass&auth-user-pass /etc/openvpn/pass.txt&' openvpn/vpn.conf
+$SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
 
 echo "::: OPENVPN and PIA Servers configured :::"
 }
