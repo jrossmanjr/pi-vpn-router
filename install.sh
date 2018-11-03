@@ -344,11 +344,12 @@ var8=$(whiptail --title "Choose VPN Provider" --menu "Choose an option" ${r} ${c
 "Nord" "NordVPN" 3>&1 1>&2 2>&3)
 
 if [ $var9 = "PIA" ]; then
-pia_password_file
-pia_setup
-else
-nord_password_file
-nord_setup
+    pia_password_file
+    pia_setup
+    else
+        nord_password_file
+        nord_setup
+fi
 }
 
 #############################################################
