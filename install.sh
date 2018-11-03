@@ -282,8 +282,8 @@ function nord_setup() {
 # download the OPENVPN files from NordVPN
 wget https://downloads.nordcdn.com/configs/archives/servers/ovpn.zip
 unzip ovpn.zip -d openvpn
-nord=$(whiptail --inputbox "For best server -- https://nordvpn.com/servers/" ${r} ${c} --title "Enter Nord Server Name - usXXXX.nordvpn.com" 3>&1 1>&2 2>&3)
-$SUDO cp openvpn/ovpn_tcp/$nord.udp.ovpn openvpn/vpn.conf
+nord=$(whiptail --inputbox "For best server -- https://nordvpn.com/servers/" ${r} ${c} --title "Enter Nord Server Name" usXXXX.nordvpn.com 3>&1 1>&2 2>&3)
+$SUDO cp openvpn/ovpn_tcp/$nord.tcp.ovpn openvpn/vpn.conf
 
 # edit openvpn conf file
 $SUDO chown -R pi:pi openvpn/*
@@ -340,7 +340,7 @@ echo "::: Installer is finished - PLEASE REBOOT :::"
 
 function vpn_selection() {
 var8=$(whiptail --title "Choose VPN Provider" --menu "Choose an option" ${r} ${c} 4 \
-"PIA" "Private Internet Access"\
+"PIA" "Private Internet Access" \
 "Nord" "NordVPN" 3>&1 1>&2 2>&3)
 
 if [ $var8 = "PIA" ]; then
