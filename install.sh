@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Find the rows and columns will default to 80x24 is it can not be detected
-screen_size=$(stty size 2>/dev/null || echo 24 80) 
+screen_size=$(stty size 2>/dev/null || echo 24 80)
 rows=$(echo $screen_size | awk '{print $1}')
 columns=$(echo $screen_size | awk '{print $2}')
 
@@ -46,9 +46,9 @@ function update_install() {
 # UPDATE and install software
 echo "::: Welcome to the VPN configurator... :::"
 echo "::: Updating and installing dependancies :::"
-$SUDO apt-get update 
-$SUDO apt-get upgrade -y 
-$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip ca-certificates -y 
+$SUDO apt-get update
+$SUDO apt-get upgrade -y
+$SUDO apt-get install isc-dhcp-server hostapd openvpn iptables-persistent unzip ca-certificates -y
 $SUDO wget http://www.fars-robotics.net/install-wifi -O /usr/bin/install-wifi
 $SUDO chmod +x /usr/bin/install-wifi
 $SUDO install-wifi
@@ -59,7 +59,7 @@ echo "::: Installs complete :::"
 ############################################################
 
 function network_settings() {
-# change interfaces 
+# change interfaces
 # get ipaddress variable
 _IP=$(hostname -I) || true
 # text box for gateway ipaddress
@@ -84,14 +84,14 @@ up ip route flush cache
 auto wlan0
 allow-hotplug wlan0
 iface wlan0 inet static
-# The IP range for our VPN wifi is 192.168.42.2 -> .40
+# The IP range for our VPN wifi is 192.168.42.2 -> .40 - SEE Hostapd
 address 192.168.42.1
 netmask 255.255.255.0" | $SUDO tee --append /etc/network/interfaces > /dev/null
 
 $SUDO sysctl -w net.ipv6.conf.all.disable_ipv6=1
 $SUDO sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
-echo "::: Updated Network Interfaces :::" 
+echo "::: Updated Network Interfaces :::"
 }
 
 ############################################################
@@ -122,21 +122,47 @@ echo 'INTERFACESv4="wlan0"' | $SUDO tee /etc/default/isc-dhcp-server > /dev/null
 var4=$(whiptail --inputbox "Name the WiFi Hotspot" ${r} ${c} VPN_Connection --title "Wifi Name" 3>&1 1>&2 2>&3)
 var5=$(whiptail --inputbox "Please enter a password for the WiFi hotspot" ${r} ${c} --title "WiFi Password" 3>&1 1>&2 2>&3)
 
-$SUDO echo 'interface=wlan0
+$SUDO echo '
+interface=wlan0
+
+# this is the driver that must be used for ath9k and other similar chipset devices
 driver=nl80211
+
+#add the controll interface for hostapd
 ctrl_interface=/var/run/Hostapd
 ctrl_interface_group=0
+
+# yes, it says 802.11g, but the n-speeds get layered on top of it
 hw_mode=g
-channel=1
-#ieee80211d=1
-#country_code=US
+
+# this enables the 802.11n speeds and capabilities ...  You will also need to enable WMM for full HT functionality.
 ieee80211n=1
 wmm_enabled=1
-beacon_int=100
+
+# self-explanatory, but not all channels may be enabled for you - check /var/log/messages for details
+channel=6
+
+# adjust to fit your location
+country_code=US
+
+# let your AP broadcast the settings that agree with the above-mentioned regulatory requirements per country
+ieee80211d=1
+
+# settings for security
 auth_algs=1
 wpa=2
 wpa_key_mgmt=WPA-PSK
-rsn_pairwise=CCMP' > /etc/hostapd/hostapd.conf
+rsn_pairwise=CCMP
+macaddr_acl=0
+
+# these have to be set in agreement w/ channel and some other values... read hostapd.conf docs
+ht_capab=[HT20][SHORT-GI-20][DSSS_CCK-40]
+
+# makes the SSID visible and broadcasted
+ignore_broadcast_ssid=0
+
+###############
+' > /etc/hostapd/hostapd.conf
 
 echo "ssid=$var4" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 echo "wpa_passphrase=$var5" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
@@ -200,11 +226,11 @@ else
     	$SUDO cp openvpn/US\ Denver.ovpn openvpn/vpn.conf
 		else
     		if [ $var9 = 4 ]; then
-    		$SUDO cp openvpn/US\ East.ovpn openvpn/vpn.conf    	
+    		$SUDO cp openvpn/US\ East.ovpn openvpn/vpn.conf
     		else
     			if [ $var9 = 5 ]; then
-    			$SUDO cp openvpn/US\ Florida.ovpn openvpn/vpn.conf		
-    			else 
+    			$SUDO cp openvpn/US\ Florida.ovpn openvpn/vpn.conf
+    			else
     				if [ $var9 = 6 ]; then
     				$SUDO cp openvpn/US\ Houston.ovpn openvpn/vpn.conf
     				else
@@ -213,10 +239,10 @@ else
     					else
 			    			if [ $var9 = 8 ]; then
     						$SUDO cp openvpn/US\ Atlanta.ovpn openvpn/vpn.conf
-    						else	
+    						else
     							if [ $var9 = 9 ]; then
     							$SUDO cp openvpn/US\ New\ York\ City.ovpn openvpn/vpn.conf
-    							else	
+    							else
     								if [ $var9 = 10 ]; then
     								$SUDO cp openvpn/US\ Seattle.ovpn openvpn/vpn.conf
 		    						else
@@ -231,7 +257,7 @@ else
     	    									else
     	    										if [ $var9 = 14 ]; then
     												$SUDO cp openvpn/US\ West.ovpn openvpn/vpn.conf
-    	    										else 
+    	    										else
     	    										echo "im lost..."
     	    										fi
     	    									fi
@@ -243,14 +269,14 @@ else
     	    			fi
     	    		fi
     	    	fi
-    	    fi 
+    	    fi
     	fi
-    fi 
+    fi
 fi
 
 # edit openvpn conf file
-#$SUDO sed 's+ca.rsa.2048.crt+/etc/openvpn/ca.rsa.2048.crt+g' /etc/openvpn/vpn.conf 
-#$SUDO sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf 
+#$SUDO sed 's+ca.rsa.2048.crt+/etc/openvpn/ca.rsa.2048.crt+g' /etc/openvpn/vpn.conf
+#$SUDO sed 's+crl.rsa.2048.pem+/etc/openvpn/crl.rsa.2048.pem+g' /etc/openvpn/vpn.conf
 $SUDO chown -R pi:pi openvpn/*
 $SUDO chmod -R 775 openvpn/
 $SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" openvpn/vpn.conf
@@ -261,7 +287,7 @@ echo "::: OPENVPN and PIA Servers configured :::"
 
 
 ############################################################
-# Nordvpn password 
+# Nordvpn password
 
 function nord_password_file() {
 # make a password file
@@ -304,7 +330,7 @@ echo "::: OPENVPN and NordVPN Servers configured :::"
 ############################################################
 
 function ip_tables() {
-# setup iptables to route traffic from wlan0 thru vpn 
+# setup iptables to route traffic from wlan0 thru vpn
 
 $SUDO sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 echo -e '\n#Enable IP Routing\nnet.ipv4.ip_forward = 1' | $SUDO tee -a /etc/sysctl.conf
@@ -320,7 +346,7 @@ $SUDO iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 $SUDO iptables -A FORWARD -s 192.168.42.0/24 -i wlan0 -o eth0 -m conntrack --ctstate NEW -j REJECT
 $SUDO iptables -A FORWARD -s 192.168.42.0/24 -i wlan0 -o tun0 -m conntrack --ctstate NEW -j ACCEPT
 
-# allow SSH so you can update 
+# allow SSH so you can update
 $SUDO iptables -t mangle -A OUTPUT -p tcp --sport 22 -j MARK --set-mark 65
 echo "::: IP tables Set! :::"
 # save the iptables you just edited and have them apply at startup
@@ -329,13 +355,13 @@ $SUDO netfilter-persistent save
 }
 
 #############################################################
-#Mission Complete notification 
+#Mission Complete notification
 
 function mission_complete() {
 echo "::: Installer is finished - PLEASE REBOOT :::"
 }
 
-############################################################
+################################################d############
 # VPN Selection
 
 function vpn_selection() {
@@ -364,4 +390,3 @@ vpn_selection
 #pia_setup
 ip_tables
 mission_complete
-
