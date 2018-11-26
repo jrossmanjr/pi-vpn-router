@@ -96,8 +96,8 @@ echo "::: Updated Network Interfaces :::"
 
 ############################################################
 
-function hostapd() {
-# add settings to hostapd
+function dhcp() {
+# add settings to dhcpd
 echo "
 authoritative;
 
@@ -114,7 +114,7 @@ echo "::: Installed WiFi hotspot rules :::"
 
 ############################################################
 
-function dhcp() {
+function hostapd() {
 # set dhcp server for wlan0
 echo 'INTERFACESv4="wlan0"' | $SUDO tee /etc/default/isc-dhcp-server > /dev/null
 
