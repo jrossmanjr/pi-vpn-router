@@ -293,7 +293,13 @@ $SUDO chmod -R 775 openvpn/
 $SUDO sed -i.bak "s+auth-user-pass+auth-user-pass /etc/openvpn/pass.txt+g" openvpn/vpn.conf
 $SUDO cp openvpn/vpn.conf /etc/openvpn/vpn.conf
 
-echo "::: OPENVPN and PIA Servers configured :::"
+# Change default openvpn settings config
+echo '
+AUTOSTART="all"
+OPTARGS=""
+OMIT_SENDSIGS=0' | $SUDO tee /etc/default/openvpn > /dev/null
+
+echo ":::  PIA Servers configured :::"
 }
 
 
@@ -334,7 +340,7 @@ AUTOSTART="all"
 OPTARGS=""
 OMIT_SENDSIGS=0' | $SUDO tee /etc/default/openvpn > /dev/null
 
-echo "::: OPENVPN and NordVPN Servers configured :::"
+echo "::: NordVPN Servers configured :::"
 }
 
 
@@ -397,7 +403,5 @@ network_settings
 hostapd
 dhcp
 vpn_selection
-#pia_password_file
-#pia_setup
 ip_tables
 mission_complete
