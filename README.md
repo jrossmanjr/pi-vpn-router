@@ -14,7 +14,7 @@ The program will install and then will give you several prompts for data:
 
 ---PIA or NordVPN Username and Password
 
----Preferred PIA US Exit node or NordVPN Exit node server name [Link](https://nordvpn.com/servers/)  
+---Preferred PIA US Exit node or NordVPN Exit node server name [Link](https://nordvpn.com/servers/tools/)  
 
 
 When install is finished just restart - `sudo reboot`
