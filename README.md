@@ -1,3 +1,5 @@
+# This project is archived and no longer in development.
+
 # pi-vpn-router
 Bash script to create a WiFi router that connects to a PIA or NordVPN using a raspberry pi
 
